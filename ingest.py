@@ -1,7 +1,15 @@
 import os
 from dotenv import load_dotenv
+from sentence_transformers import SentenceTransformer
+from numpy import dot
+from numpy.linalg import norm
 
-load_dotenv()
+load_dotenv()  #Load Environmental Variables
+
+#Load Model 
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+
 
 def load_notes(folder="data"):
     file_list = []
@@ -32,11 +40,17 @@ def chunk_text(text, chunk_size=500, overlap=50):
         start = start + chunk_size - overlap
     
     return chunk_list
+
+def embed_chunks(chunk_list):
+    embeddings = model.encode(chunk_list)
+    print(embeddings.shape)
+    
+    return embeddings
             
 
 if __name__ == "__main__":
     notes = load_notes()
-    chunks = chunk_text(notes[0]["text"], chunk_size=30, overlap=10)
+    chunks = chunk_text(notes[0]["text"])
     print(f"Number of chunks: {len(chunks)}")
-    for i, chunk in enumerate(chunks):
-        print(f"\nChunk {i+1}:\n{chunk}") 
+    embeddings = embed_chunks(chunks)
+    
