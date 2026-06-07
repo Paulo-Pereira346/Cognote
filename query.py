@@ -64,5 +64,5 @@ def ask(question, n=3):
     return answer, source_list
 
 if __name__ == "__main__":
-    answer, source = ask("What is supervised learning?")
+    answer, source = ask("How Many layers does the OSI Model have? Name them")
     print(answer)
