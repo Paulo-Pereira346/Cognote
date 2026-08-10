@@ -1,8 +1,10 @@
 from langchain_groq import ChatGroq
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain.chains import RetrievalQA
-from dot_env import load_dotenv
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -13,27 +15,40 @@ embeddings = HuggingFaceEmbeddings(
 vector_store = Chroma(
     persist_directory = './chroma_db/',
     embedding_function = embeddings,
-    collection = 'notes'
+    collection_name = 'notes'
 )
+
 retriever = vector_store.as_retriever(search_kwargs = {"k" : 3})
 
 llm = ChatGroq(
     model_name = 'llama-3.1-8b-instant'
 )
 
-chain = RetrievalQA.from_chain_type(
-    llm = llm,
-    retriever = retriever,
-    return_source_documents = True
+prompt = ChatPromptTemplate.from_template("""
+Answer the question using ONLY the context below.
+If the answer isn't there, say "I don't have that in my notes."
+
+Context: {context}
+Question: {input}
+""")
+
+def format_docs(docs):
+    return "\n\n---\n\n".join(doc.page_content for doc in docs)
+
+chain = (
+    {"context": retriever | format_docs, "input": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
 )
 
 
 def ask_langchain(question):
-    answer = chain.invoke({"query": question})
+    answer = chain.invoke(question)
     return answer
 
 if __name__ == "__main__":
-    answer = ask_langchain("What is Supervised Learning?")
-    print(answer["result"])
-    print(answer["source_documents"])
+    answer = ask_langchain("What is Supervised Learning? What are the two types?")
+    print(answer)
+
     
