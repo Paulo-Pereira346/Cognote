@@ -14,15 +14,19 @@ with st.sidebar:
     st.header("📂 Your Notes")
     uploaded_files = st.file_uploader(
         "Upload .txt files",
-        type=["txt"],
+        type=["txt", "pdf"],
         accept_multiple_files=True
     )
 
     if uploaded_files:
         os.makedirs("data", exist_ok=True)
         for file in uploaded_files:
-            with open(f"data/{file.name}", "w") as f:
-                f.write(file.read().decode("utf-8"))
+            if file.name.endswith(".pdf"):
+                with open(f"data/{file.name}", "wb") as f:  # binary mode for PDFs
+                    f.write(file.read())
+            else:
+                with open(f"data/{file.name}", "w") as f:  # text mode for txt
+                    f.write(file.read().decode("utf-8"))
         st.success(f"{len(uploaded_files)} file(s) uploaded!")
 
     if st.button("📥 Ingest Notes", use_container_width=True):
