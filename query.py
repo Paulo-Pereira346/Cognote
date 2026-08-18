@@ -12,6 +12,7 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 groq_client = Groq()
 
 def ask(question, n=3):
+    """This is a function that uses RAG to answer the question"""
     question_embed = model.encode([question]).tolist()
     collection = chroma_client.get_or_create_collection("notes")
     results = collection.query(
