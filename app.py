@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(__file__))
 
 from ingest import ingest_notes, client
 from query import ask
+from agent import ask_agent
 
 st.set_page_config(page_title="Cognote", page_icon="🧠", layout="centered")
 st.title("🧠 Cognote")
@@ -44,12 +45,16 @@ question = st.text_input("Ask a question:", placeholder="What is supervised lear
 
 if question:
     with st.spinner("Searching notes and thinking..."):
-        answer, sources = ask(question)
+        #For Simple RAG:
+        # answer, sources = ask(question)
+        
+        #For Agentic Behaviour
+        answer = ask_agent(question)
 
     st.markdown("### 💬 Answer")
     st.write(answer)
 
-    with st.expander("📎 View retrieved chunks"):
-        for i, source in enumerate(sources):
-            st.markdown(f"**[{i+1}] From `{source['source_file']}`:**")
-            st.text(source["text"][:300] + "...")
+    # with st.expander("📎 View retrieved chunks"):
+    #     for i, source in enumerate(sources):
+    #         st.markdown(f"**[{i+1}] From `{source['source_file']}`:**")
+    #         st.text(source["text"][:300] + "...")

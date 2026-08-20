@@ -27,7 +27,5 @@ def ask_agent(question):
     return response["messages"][-1].content
 
 if __name__ == "__main__":
-    answer = ask_agent(
-        "How many layers does the OSI model have multiplied by 5? Also name the OSI layers."
-    )
+    answer = ask_agent("What is the latest AI model released by OpenAI in 2025? What is regression and classification in machine learning and where did you get this answer from?")
     print(answer)
