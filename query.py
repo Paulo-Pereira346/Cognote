@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import chromadb
 from sentence_transformers import SentenceTransformer
 from groq import Groq
+import os
 
 load_dotenv()
 
@@ -57,7 +58,7 @@ def ask(question, n=3):
             "content": prompt
         }
        ],
-       model = "llama-3.1-8b-instant"
+    model = os.environ["GROQ_MODEL"]
     )
     
     answer = response.choices[0].message.content

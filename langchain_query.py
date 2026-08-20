@@ -5,6 +5,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ vector_store = Chroma(
 retriever = vector_store.as_retriever(search_kwargs = {"k" : 3})
 
 llm = ChatGroq(
-    model_name = 'llama-3.1-8b-instant'
+    model_name = os.environ['GROQ_MODEL']
 )
 
 prompt = ChatPromptTemplate.from_template("""

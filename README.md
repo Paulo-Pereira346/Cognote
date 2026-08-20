@@ -6,7 +6,7 @@ it finds the relevant parts and answers using an LLM.
 ## Tech Stack
 - Embeddings: sentence-transformers (all-MiniLM-L6-v2)
 - Vector DB: ChromaDB
-- LLM: Groq (LLaMA 3.1)
+- LLM: Groq (configurable with `GROQ_MODEL`, defaulting to `openai/gpt-oss-20b`)
 - UI: Streamlit
 - Also implemented using LangChain LCEL for comparison
 
